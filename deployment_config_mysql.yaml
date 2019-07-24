@@ -1,0 +1,143 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+    template.alpha.openshift.io/wait-for-ready: 'true'
+  selfLink: /apis/apps.openshift.io/v1/namespaces/dc/deploymentconfigs/mysql98
+  resourceVersion: '57223319'
+  name: mysql98
+  uid: 98665aec-aa00-11e9-8d1a-0a580a810066
+  creationTimestamp: '2019-07-19T08:38:34Z'
+  generation: 2
+  namespace: dc
+  labels:
+    app: mysql-persistent
+    template: mysql-persistent-template
+spec:
+  strategy:
+    type: Recreate
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - mysql
+        from:
+          kind: ImageStreamTag
+          namespace: openshift
+          name: 'mysql:5.7'
+        lastTriggeredImage: >-
+          image-registry.openshift-image-registry.svc:5000/openshift/mysql@sha256:16386423eaa147384d3a9820f3eb47aa1e7b93570f4d577593931d1f0cf09176
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    name: mysql98
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mysql-persistent
+        name: mysql98
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+    spec:
+      volumes:
+        - name: mysql98-data
+          persistentVolumeClaim:
+            claimName: mysql98
+      containers:
+        - resources:
+            limits:
+              memory: 512Mi
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - '-i'
+                - '-c'
+                - >-
+                  MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER
+                  -D $MYSQL_DATABASE -e 'SELECT 1'
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: mysql
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql98
+                  key: database-user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql98
+                  key: database-password
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql98
+                  key: database-root-password
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mysql98
+                  key: database-name
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: mysql98-data
+              mountPath: /var/lib/mysql/data
+          terminationMessagePolicy: File
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/mysql@sha256:16386423eaa147384d3a9820f3eb47aa1e7b93570f4d577593931d1f0cf09176
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+status:
+  observedGeneration: 2
+  details:
+    message: config change
+    causes:
+      - type: ConfigChange
+  availableReplicas: 1
+  unavailableReplicas: 0
+  latestVersion: 1
+  updatedReplicas: 1
+  conditions:
+    - type: Available
+      status: 'True'
+      lastUpdateTime: '2019-07-19T08:39:40Z'
+      lastTransitionTime: '2019-07-19T08:39:40Z'
+      message: Deployment config has minimum availability.
+    - type: Progressing
+      status: 'True'
+      lastUpdateTime: '2019-07-19T08:39:41Z'
+      lastTransitionTime: '2019-07-19T08:39:41Z'
+      reason: NewReplicationControllerAvailable
+      message: replication controller "mysql98-1" successfully rolled out
+  replicas: 1
+  readyReplicas: 1
+
