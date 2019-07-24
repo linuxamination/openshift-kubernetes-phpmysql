@@ -1,0 +1,29 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql98
+  namespace: dc
+  selfLink: /api/v1/namespaces/dc/services/mysql98
+  uid: 980c4dfe-aa00-11e9-8623-0203665c4294
+  resourceVersion: '57222262'
+  creationTimestamp: '2019-07-19T08:38:33Z'
+  labels:
+    app: mysql-persistent
+    template: mysql-persistent-template
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+    template.openshift.io/expose-uri: 'mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mysql")].port}'
+spec:
+  ports:
+    - name: mysql
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+  selector:
+    name: mysql98
+  clusterIP: 172.30.121.94
+  type: ClusterIP
+  sessionAffinity: None
+status:
+  loadBalancer: {}
+

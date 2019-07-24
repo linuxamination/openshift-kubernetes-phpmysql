@@ -1,0 +1,141 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  generateName: invoice-2-
+  annotations:
+    k8s.v1.cni.cncf.io/networks-status: |-
+      [{
+          "name": "openshift-sdn",
+          "interface": "eth0",
+          "ips": [
+              "10.130.7.59"
+          ],
+          "default": true,
+          "dns": {}
+      }]
+    kubernetes.io/limit-ranger: >-
+      LimitRanger plugin set: cpu, memory request for container invoice; cpu,
+      memory limit for container invoice
+    openshift.io/deployment-config.latest-version: '2'
+    openshift.io/deployment-config.name: invoice
+    openshift.io/deployment.name: invoice-2
+    openshift.io/scc: restricted
+  selfLink: /api/v1/namespaces/dc/pods/invoice-2-b9ljz
+  resourceVersion: '52701575'
+  name: invoice-2-b9ljz
+  uid: 60856b89-a733-11e9-9ca3-0203665c4294
+  creationTimestamp: '2019-07-15T19:04:31Z'
+  namespace: dc
+  ownerReferences:
+    - apiVersion: v1
+      kind: ReplicationController
+      name: invoice-2
+      uid: 5ae034bd-a733-11e9-9ca3-0203665c4294
+      controller: true
+      blockOwnerDeletion: true
+  labels:
+    app: invoice
+    deployment: invoice-2
+    deploymentconfig: invoice
+spec:
+  restartPolicy: Always
+  serviceAccountName: default
+  imagePullSecrets:
+    - name: default-dockercfg-zt588
+  priority: 0
+  schedulerName: default-scheduler
+  enableServiceLinks: true
+  terminationGracePeriodSeconds: 30
+  nodeName: ip-10-0-133-124.us-east-2.compute.internal
+  securityContext:
+    seLinuxOptions:
+      level: 's0:c104,c54'
+    fsGroup: 1010820000
+  containers:
+    - resources:
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 20m
+          memory: 256Mi
+      terminationMessagePath: /dev/termination-log
+      name: invoice
+      securityContext:
+        capabilities:
+          drop:
+            - KILL
+            - MKNOD
+            - SETGID
+            - SETUID
+        runAsUser: 1010820000
+        procMount: Default
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+      imagePullPolicy: Always
+      volumeMounts:
+        - name: default-token-zcm6g
+          readOnly: true
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      terminationMessagePolicy: File
+      image: >-
+        image-registry.openshift-image-registry.svc:5000/dc/invoice@sha256:9d2d9ccfcd84ddec2f6d5c54f2d50718c524332c418a684cb51dc5ffd86815db
+  serviceAccount: default
+  volumes:
+    - name: default-token-zcm6g
+      secret:
+        secretName: default-token-zcm6g
+        defaultMode: 420
+  dnsPolicy: ClusterFirst
+  tolerations:
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/memory-pressure
+      operator: Exists
+      effect: NoSchedule
+status:
+  phase: Running
+  conditions:
+    - type: Initialized
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2019-07-15T19:04:32Z'
+    - type: Ready
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2019-07-15T19:05:24Z'
+    - type: ContainersReady
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2019-07-15T19:05:24Z'
+    - type: PodScheduled
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2019-07-15T19:04:32Z'
+  hostIP: 10.0.133.124
+  podIP: 10.130.7.59
+  startTime: '2019-07-15T19:04:32Z'
+  containerStatuses:
+    - name: invoice
+      state:
+        running:
+          startedAt: '2019-07-15T19:05:24Z'
+      lastState: {}
+      ready: true
+      restartCount: 0
+      image: >-
+        image-registry.openshift-image-registry.svc:5000/dc/invoice@sha256:9d2d9ccfcd84ddec2f6d5c54f2d50718c524332c418a684cb51dc5ffd86815db
+      imageID: >-
+        image-registry.openshift-image-registry.svc:5000/dc/invoice@sha256:9d2d9ccfcd84ddec2f6d5c54f2d50718c524332c418a684cb51dc5ffd86815db
+      containerID: 'cri-o://e4a84a6e3fa46a6a0fb962b337f2660027e068d38bc4bbeac258f2c9e416db95'
+  qosClass: Burstable
+

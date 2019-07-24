@@ -1,0 +1,111 @@
+kind: Build
+apiVersion: build.openshift.io/v1
+metadata:
+  annotations:
+    openshift.io/build-config.name: invoice
+    openshift.io/build.number: '2'
+    openshift.io/build.pod-name: invoice-2-build
+  selfLink: /apis/build.openshift.io/v1/namespaces/dc/builds/invoice-2
+  resourceVersion: '52691720'
+  name: invoice-2
+  uid: 98a7e6cf-a720-11e9-834c-0a580a8001cf
+  creationTimestamp: '2019-07-15T16:50:05Z'
+  namespace: dc
+  ownerReferences:
+    - apiVersion: build.openshift.io/v1
+      kind: BuildConfig
+      name: invoice
+      uid: 571ec772-a70b-11e9-8377-0a580a810022
+      controller: true
+  labels:
+    app: invoice
+    buildconfig: invoice
+    openshift.io/build-config.name: invoice
+    openshift.io/build.start-policy: Serial
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'invoice:latest'
+    pushSecret:
+      name: builder-dockercfg-mxrrw
+  resources: {}
+  triggeredBy:
+    - message: Image change
+      imageChangeBuild:
+        imageID: >-
+          image-registry.openshift-image-registry.svc:5000/openshift/php@sha256:22ba545b450617ca69884a75ab50c421eaf714c2844f0f6882adb97f653d09b5
+        fromRef:
+          kind: ImageStreamTag
+          namespace: openshift
+          name: 'php:7.2'
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: DockerImage
+        name: >-
+          image-registry.openshift-image-registry.svc:5000/openshift/php@sha256:22ba545b450617ca69884a75ab50c421eaf714c2844f0f6882adb97f653d09b5
+      pullSecret:
+        name: builder-dockercfg-mxrrw
+  postCommit: {}
+  serviceAccount: builder
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/InvoicePlane/InvoicePlane.git'
+  revision:
+    type: Git
+    git:
+      commit: 61e0bd412d9fbd089eae26bdb1c6d9d3788fd3b3
+      author:
+        name: Severenth
+        email: 44609559+Severenth@users.noreply.github.com
+      committer:
+        name: GitHub
+        email: noreply@github.com
+      message: 'Merge pull request #683 from InvoicePlane/v1.5.10'
+status:
+  phase: Complete
+  startTimestamp: '2019-07-15T16:50:34Z'
+  completionTimestamp: '2019-07-15T19:04:21Z'
+  duration: 8027000000000
+  outputDockerImageReference: 'image-registry.openshift-image-registry.svc:5000/dc/invoice:latest'
+  config:
+    kind: BuildConfig
+    namespace: dc
+    name: invoice
+  output:
+    to:
+      imageDigest: 'sha256:9d2d9ccfcd84ddec2f6d5c54f2d50718c524332c418a684cb51dc5ffd86815db'
+  stages:
+    - name: FetchInputs
+      startTime: '2019-07-15T16:50:45Z'
+      durationMilliseconds: 937
+      steps:
+        - name: FetchGitSource
+          startTime: '2019-07-15T16:50:45Z'
+          durationMilliseconds: 937
+    - name: PullImages
+      startTime: '2019-07-15T16:50:52Z'
+      durationMilliseconds: 5396862
+      steps:
+        - name: PullBaseImage
+          startTime: '2019-07-15T16:50:52Z'
+          durationMilliseconds: 5396862
+    - name: Build
+      startTime: '2019-07-15T18:20:50Z'
+      durationMilliseconds: 49951
+      steps:
+        - name: DockerBuild
+          startTime: '2019-07-15T18:20:50Z'
+          durationMilliseconds: 49951
+    - name: PushImage
+      startTime: '2019-07-15T18:21:40Z'
+      durationMilliseconds: 2561244
+      steps:
+        - name: PushImage
+          startTime: '2019-07-15T18:21:40Z'
+          durationMilliseconds: 2561244
+

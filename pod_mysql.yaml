@@ -1,0 +1,189 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  generateName: mysql98-1-
+  annotations:
+    k8s.v1.cni.cncf.io/networks-status: |-
+      [{
+          "name": "openshift-sdn",
+          "interface": "eth0",
+          "ips": [
+              "10.130.9.208"
+          ],
+          "default": true,
+          "dns": {}
+      }]
+    kubernetes.io/limit-ranger: >-
+      LimitRanger plugin set: cpu request for container mysql; cpu limit for
+      container mysql
+    openshift.io/deployment-config.latest-version: '1'
+    openshift.io/deployment-config.name: mysql98
+    openshift.io/deployment.name: mysql98-1
+    openshift.io/generated-by: OpenShiftNewApp
+    openshift.io/scc: restricted
+  selfLink: /api/v1/namespaces/dc/pods/mysql98-1-mhgbv
+  resourceVersion: '57223295'
+  name: mysql98-1-mhgbv
+  uid: 9df7c013-aa00-11e9-8623-0203665c4294
+  creationTimestamp: '2019-07-19T08:38:43Z'
+  namespace: dc
+  ownerReferences:
+    - apiVersion: v1
+      kind: ReplicationController
+      name: mysql98-1
+      uid: 993f7ff7-aa00-11e9-8479-0627d7dfedd0
+      controller: true
+      blockOwnerDeletion: true
+  labels:
+    app: mysql-persistent
+    deployment: mysql98-1
+    deploymentconfig: mysql98
+    name: mysql98
+spec:
+  restartPolicy: Always
+  serviceAccountName: default
+  imagePullSecrets:
+    - name: default-dockercfg-zt588
+  priority: 0
+  schedulerName: default-scheduler
+  enableServiceLinks: true
+  terminationGracePeriodSeconds: 30
+  nodeName: ip-10-0-140-27.us-east-2.compute.internal
+  securityContext:
+    seLinuxOptions:
+      level: 's0:c104,c54'
+    fsGroup: 1010820000
+  containers:
+    - resources:
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 20m
+          memory: 256Mi
+      readinessProbe:
+        exec:
+          command:
+            - /bin/sh
+            - '-i'
+            - '-c'
+            - >-
+              MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D
+              $MYSQL_DATABASE -e 'SELECT 1'
+        initialDelaySeconds: 5
+        timeoutSeconds: 1
+        periodSeconds: 10
+        successThreshold: 1
+        failureThreshold: 3
+      terminationMessagePath: /dev/termination-log
+      name: mysql
+      livenessProbe:
+        tcpSocket:
+          port: 3306
+        initialDelaySeconds: 30
+        timeoutSeconds: 1
+        periodSeconds: 10
+        successThreshold: 1
+        failureThreshold: 3
+      env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql98
+              key: database-user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql98
+              key: database-password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql98
+              key: database-root-password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mysql98
+              key: database-name
+      securityContext:
+        capabilities:
+          drop:
+            - KILL
+            - MKNOD
+            - SETGID
+            - SETUID
+        runAsUser: 1010820000
+        procMount: Default
+      ports:
+        - containerPort: 3306
+          protocol: TCP
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - name: mysql98-data
+          mountPath: /var/lib/mysql/data
+        - name: default-token-zcm6g
+          readOnly: true
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      terminationMessagePolicy: File
+      image: >-
+        image-registry.openshift-image-registry.svc:5000/openshift/mysql@sha256:16386423eaa147384d3a9820f3eb47aa1e7b93570f4d577593931d1f0cf09176
+  serviceAccount: default
+  volumes:
+    - name: mysql98-data
+      persistentVolumeClaim:
+        claimName: mysql98
+    - name: default-token-zcm6g
+      secret:
+        secretName: default-token-zcm6g
+        defaultMode: 420
+  dnsPolicy: ClusterFirst
+  tolerations:
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/memory-pressure
+      operator: Exists
+      effect: NoSchedule
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+status:
+  phase: Running
+  conditions:
+    - type: Initialized
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2019-07-19T08:38:44Z'
+    - type: Ready
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2019-07-19T08:39:40Z'
+    - type: ContainersReady
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2019-07-19T08:39:40Z'
+    - type: PodScheduled
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2019-07-19T08:38:44Z'
+  hostIP: 10.0.140.27
+  podIP: 10.130.9.208
+  startTime: '2019-07-19T08:38:44Z'
+  containerStatuses:
+    - name: mysql
+      state:
+        running:
+          startedAt: '2019-07-19T08:39:29Z'
+      lastState: {}
+      ready: true
+      restartCount: 0
+      image: >-
+        image-registry.openshift-image-registry.svc:5000/openshift/mysql@sha256:16386423eaa147384d3a9820f3eb47aa1e7b93570f4d577593931d1f0cf09176
+      imageID: >-
+        image-registry.openshift-image-registry.svc:5000/openshift/mysql@sha256:16386423eaa147384d3a9820f3eb47aa1e7b93570f4d577593931d1f0cf09176
+      containerID: 'cri-o://d33e41ba850908274de830c430a9c4f24750ca5e2d78789fca158a5b82c86b24'
+  qosClass: Burstable
+

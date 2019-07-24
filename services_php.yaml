@@ -1,0 +1,26 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: invoice
+  namespace: dc
+  selfLink: /api/v1/namespaces/dc/services/invoice
+  uid: 57270fb8-a70b-11e9-8bb4-0af4494394fa
+  resourceVersion: '52251827'
+  creationTimestamp: '2019-07-15T14:17:56Z'
+  labels:
+    app: invoice
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: invoice
+    deploymentconfig: invoice
+  clusterIP: 172.30.156.251
+  type: ClusterIP
+  sessionAffinity: None
+status:
+  loadBalancer: {}
+
